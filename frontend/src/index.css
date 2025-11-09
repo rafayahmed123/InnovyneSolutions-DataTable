@@ -1,0 +1,88 @@
+/* Reset some basic defaults */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background-color: #0070f3;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.file-uploader input[type="file"] {
+  display: none;
+}
+
+.file-uploader label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0070f3;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.file-uploader label:hover {
+  background-color: #005bb5;
+}
+
+.ai-panel {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #e9f0ff;
+  border-radius: 8px;
+}
+
+.ai-panel input[type="text"] {
+  width: 80%;
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.ai-panel button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0070f3;
+  color: white;
+  cursor: pointer;
+}
+
+.ai-panel button:hover {
+  background-color: #005bb5;
+}

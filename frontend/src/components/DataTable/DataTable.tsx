@@ -2,10 +2,11 @@ import React, { useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
+  getPaginationRowModel,
   flexRender,
 } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
-import "./DataTable.css"; // import the CSS
+import "./DataTable.css";
 
 interface DataRow {
   [key: string]: any;
@@ -61,7 +62,12 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
         ) : (
           <span
             onClick={() => setEditing({ row: row.index, key })}
-            style={{ cursor: "pointer" }}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
           >
             {value}
           </span>
@@ -97,6 +103,8 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // enable pagination
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } }, // 10 rows per page
   });
 
   return (
@@ -158,6 +166,40 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls */}
+      <div className="pagination">
+        <button
+          className="btn"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </button>
+        <span>
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </span>
+        <button
+          className="btn"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </button>
+        <select
+          value={table.getState().pagination.pageSize}
+          onChange={(e) => {
+            table.setPageSize(Number(e.target.value));
+          }}
+        >
+          {[10, 20, 50, 100].map((size) => (
+            <option key={size} value={size}>
+              Show {size}
+            </option>
+          ))}
+        </select>
+      </div>
     </>
   );
 };

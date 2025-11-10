@@ -3,9 +3,6 @@ require("dotenv").config();
 
 const OpenAI = require("openai");
 
-// Check if the API key is loaded
-console.log("OpenAI Key Loaded:", !!process.env.OPENAI_API_KEY);
-
 // Initialize OpenAI client
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -16,14 +13,64 @@ async function answerWithAI(dataset, question) {
     return { answer: "No data available." };
   }
 
-  // Limit dataset preview to avoid sending too much data
   const dataPreview = JSON.stringify(dataset.rows.slice(0, 20));
-
   const prompt = `
-Here is a dataset: ${dataPreview}
-
-Answer the following question based on this data:
-${question}
+  You are an AI assistant inside a web application for exploring and editing tabular data uploaded by the user.
+  
+  You are given a dataset preview (CSV/JSON parsed table). 
+  Rely ONLY on this provided data.
+  
+  --------------------------------
+  DATASET:
+  ${dataPreview}
+  --------------------------------
+  
+  USER REQUEST:
+  ${question}
+  --------------------------------
+  
+  Your responsibilities:
+  1) Summarize the dataset when asked.
+  2) Answer analytical questions using only columns + rows in the data.
+  3) Detect interesting statistics (min/max/avg), patterns, anomalies, missing values.
+  4) If requested, perform data edits (add / update / delete rows).
+  5) If the request cannot be answered, ask clarifying questions.
+  
+  Rules:
+  - Never hallucinate values that do not exist in the dataset.
+  - If unsure, ask for clarification.
+  - Avoid referencing implementation or file details.
+  - Keep explanations concise but insightful.
+  
+  If providing a summary or analytical response, use this structure:
+  {
+    "summary": "optional summary text",
+    "answer": "direct answer to the question",
+    "details": []
+  }
+  
+  If performing data modification, return ONLY structured JSON:
+  {
+    "action": "update" | "add" | "delete" | "none",
+    "updates": [
+      {
+        "rowIndex": number,
+        "oldValue": {},
+        "newValue": {}
+      }
+    ],
+    "newRows": [
+      {}
+    ],
+    "deletedRows": [
+      number
+    ]
+  }
+  
+  If no changes are needed, return:
+  { "action": "none" }
+  
+  Respond based ONLY on the dataset above.
   `;
 
   try {

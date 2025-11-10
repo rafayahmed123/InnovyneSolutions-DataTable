@@ -1,18 +1,27 @@
 const express = require("express");
-const { getDataset } = require("../data/dataStore");
+const fs = require("fs");
 const { answerWithAI } = require("../services/openai.service");
 
 const router = express.Router();
 
 // POST /api/ai/query
 router.post("/query", async (req, res) => {
-  const { datasetId, question } = req.body;
+  const { filePath, question } = req.body;
 
-  const dataset = getDataset(datasetId);
-  if (!dataset) return res.status(404).json({ error: "Dataset not found" });
+  if (!filePath) {
+    return res.status(400).json({ error: "filePath is required" });
+  }
 
-  const answer = await answerWithAI(dataset, question);
-  res.json(answer);
+  try {
+    const raw = fs.readFileSync(filePath, "utf8");
+    const rows = raw.split("\n").map((line) => line.split(",")); // simple parse
+
+    const answer = await answerWithAI({ rows }, question);
+    res.json(answer);
+  } catch (err) {
+    console.error("AI Query error:", err);
+    return res.status(500).json({ error: "Failed to load file" });
+  }
 });
 
 module.exports = router;

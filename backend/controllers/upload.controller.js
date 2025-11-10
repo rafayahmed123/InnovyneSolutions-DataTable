@@ -1,6 +1,4 @@
 const { parseFile } = require("../utils/parseFile");
-const { addDataset } = require("../data/dataStore");
-const crypto = require("crypto");
 
 exports.handleUpload = async (req, res) => {
   try {
@@ -10,13 +8,9 @@ exports.handleUpload = async (req, res) => {
 
     const parsedData = await parseFile(req.file);
 
-    const id = crypto.randomUUID();
-
-    addDataset(id, req.file.originalname, parsedData);
-
     return res.json({
-      message: "File uploaded + parsed + stored",
-      datasetId: id,
+      message: "File uploaded + parsed",
+      filePath: req.file.path,
       rows: parsedData,
     });
   } catch (err) {

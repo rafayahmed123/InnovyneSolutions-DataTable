@@ -44,18 +44,28 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
         const value = row.original[key];
         const isEditing = editing?.row === row.index && editing?.key === key;
 
+        const [tempValue, setTempValue] = useState(value);
+
+        const handleBlur = () => {
+          // commit only if changed
+          if (tempValue !== value) {
+            const updated = [...data];
+            updated[row.index] = {
+              ...updated[row.index],
+              [key]: tempValue,
+            };
+            onDataChange(updated);
+          }
+          setEditing(null);
+        };
+
         return isEditing ? (
           <input
             className="new-row-input"
-            value={value}
+            value={tempValue}
             autoFocus
             onChange={(e) => {
-              const updated = [...data];
-              updated[row.index] = {
-                ...updated[row.index],
-                [key]: e.target.value,
-              };
-              onDataChange(updated);
+              setTempValue(e.target.value);
             }}
             onBlur={handleBlur}
           />
@@ -109,7 +119,6 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
 
   return (
     <>
-      {/* New Row Input Table */}
       <table className="data-table">
         <thead>
           <tr>

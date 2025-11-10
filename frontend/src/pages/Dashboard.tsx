@@ -2,25 +2,34 @@ import { useState } from "react";
 import FileUploader from "../components/FileUploader/FileUploader";
 import DataTable from "../components/DataTable/DataTable";
 import AIQueryPanel from "../components/AIQueryPanel/AIQueryPanel";
-import { uploadDataset, queryAI } from "../api/datasetApi";
+import { uploadDataset, queryAI, updateFileRows } from "../api/datasetApi";
 
 export default function Dashboard() {
-  const [datasetId, setDatasetId] = useState<string | null>(null);
+  const [filePath, setFilePath] = useState<string | null>(null);
   const [data, setData] = useState<any[]>([]);
 
   const handleUpload = async (file: File) => {
     const res = await uploadDataset(file);
-    setDatasetId(res.datasetId);
+    console.log("filePath:", res.filePath);
+    setFilePath(res.filePath);
     setData(res.rows);
   };
 
-  const handleDataChange = (updated: any[]) => {
+  const handleDataChange = async (updated: any[]) => {
     setData(updated);
+
+    if (filePath) {
+      try {
+        await updateFileRows(filePath, updated);
+      } catch (err) {
+        console.error("Failed to update file:", err);
+      }
+    }
   };
 
   const handleAIQuery = async (question: string) => {
-    if (!datasetId) return { answer: "Upload dataset first" };
-    return await queryAI(datasetId, question);
+    if (!filePath) return { answer: "Upload dataset first" };
+    return await queryAI(filePath, question);
   };
 
   return (
@@ -32,8 +41,8 @@ export default function Dashboard() {
         <DataTable data={data} onDataChange={handleDataChange} />
       )}
 
-      {datasetId && (
-        <AIQueryPanel datasetId={datasetId} onQuery={handleAIQuery} />
+      {filePath && (
+        <AIQueryPanel datasetId={filePath} onQuery={handleAIQuery} />
       )}
     </div>
   );

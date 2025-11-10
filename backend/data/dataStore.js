@@ -1,5 +1,5 @@
 // Simple in-memory store
-let datasets = {}; // { id: { name, rows } }
+let datasets = {};
 
 function addDataset(id, name, rows) {
   datasets[id] = { id, name, rows };

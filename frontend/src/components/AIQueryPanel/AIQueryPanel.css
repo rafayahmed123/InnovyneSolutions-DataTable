@@ -1,0 +1,28 @@
+.ai-panel {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e9f0ff;
+    border-radius: 8px;
+  }
+  
+  .ai-panel input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .ai-panel button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    background-color: #0070f3;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .ai-panel button:hover {
+    background-color: #005bb5;
+  }
+  

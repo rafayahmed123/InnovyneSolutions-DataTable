@@ -4,8 +4,8 @@ import {
   getCoreRowModel,
   flexRender,
 } from "@tanstack/react-table";
-
 import type { ColumnDef } from "@tanstack/react-table";
+import "./DataTable.css"; // import the CSS
 
 interface DataRow {
   [key: string]: any;
@@ -28,18 +28,24 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
 
   const handleBlur = () => setEditing(null);
 
+  const handleDelete = (rowIndex: number) => {
+    const updated = data.filter((_, i) => i !== rowIndex);
+    onDataChange(updated);
+  };
+
   const columns = useMemo<ColumnDef<DataRow>[]>(() => {
     if (!data || data.length === 0) return [];
 
-    return Object.keys(data[0]).map((key) => ({
+    const baseCols = Object.keys(data[0]).map((key) => ({
       accessorKey: key,
       header: key,
-      cell: ({ row }) => {
+      cell: ({ row }: any) => {
         const value = row.original[key];
         const isEditing = editing?.row === row.index && editing?.key === key;
 
         return isEditing ? (
           <input
+            className="new-row-input"
             value={value}
             autoFocus
             onChange={(e) => {
@@ -51,7 +57,6 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
               onDataChange(updated);
             }}
             onBlur={handleBlur}
-            style={{ width: "100%" }}
           />
         ) : (
           <span
@@ -63,6 +68,22 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
         );
       },
     }));
+
+    const deleteCol: ColumnDef<DataRow> = {
+      id: "actions",
+      header: "Actions",
+      size: 80,
+      cell: ({ row }: any) => (
+        <button
+          className="btn btn-delete"
+          onClick={() => handleDelete(row.index)}
+        >
+          Delete
+        </button>
+      ),
+    };
+
+    return [...baseCols, deleteCol];
   }, [data, editing, onDataChange]);
 
   const handleAddRow = () => {
@@ -80,36 +101,23 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
 
   return (
     <>
-      <table
-        style={{
-          border: "1px solid black",
-          width: "100%",
-          marginBottom: "1rem",
-        }}
-      >
+      {/* New Row Input Table */}
+      <table className="data-table">
         <thead>
           <tr>
             {Object.keys(newRow).map((key) => (
-              <th
-                key={key}
-                style={{ border: "1px solid black", padding: "0.5rem" }}
-              >
-                {key}
-              </th>
+              <th key={key}>{key}</th>
             ))}
           </tr>
           <tr>
             {Object.keys(newRow).map((key) => (
-              <td
-                key={key}
-                style={{ border: "1px solid black", padding: "0.5rem" }}
-              >
+              <td key={key}>
                 <input
+                  className="new-row-input"
                   value={newRow[key]}
                   onChange={(e) =>
                     setNewRow({ ...newRow, [key]: e.target.value })
                   }
-                  style={{ width: "100%" }}
                 />
               </td>
             ))}
@@ -117,30 +125,17 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
         </thead>
       </table>
 
-      <button
-        style={{
-          marginBottom: "1rem",
-          padding: "0.5rem 1rem",
-          backgroundColor: "#00b37e",
-          color: "white",
-          border: "none",
-          borderRadius: "6px",
-          cursor: "pointer",
-        }}
-        onClick={handleAddRow}
-      >
+      <button className="btn btn-add" onClick={handleAddRow}>
         ➕ Add Row
       </button>
 
-      <table style={{ border: "1px solid black", width: "100%" }}>
+      {/* Data Table */}
+      <table className="data-table">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  style={{ border: "1px solid black", padding: "0.5rem" }}
-                >
+                <th key={header.id}>
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
@@ -155,10 +150,7 @@ const DataTable: React.FC<DataTableProps> = ({ data, onDataChange }) => {
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  style={{ border: "1px solid black", padding: "0.5rem" }}
-                >
+                <td key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

@@ -1,0 +1,60 @@
+/* General table styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+  
+  .data-table th,
+  .data-table td {
+    border: 1px solid black;
+    padding: 0.5rem;
+    text-align: left;
+  }
+  
+  .data-table th {
+    background-color: #0070f3;
+    color: white;
+  }
+  
+  /* Input in table cells */
+  .data-table input {
+    width: 100%;
+    padding: 4px 6px;
+    box-sizing: border-box;
+  }
+  
+  /* Buttons */
+  .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+    color: white;
+  }
+  
+  .btn-add {
+    background-color: #00b37e;
+  }
+  
+  .btn-add:hover {
+    background-color: #01875f;
+  }
+  
+  .btn-delete {
+    background-color: #e53e3e;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .btn-delete:hover {
+    background-color: #c53030;
+  }
+  
+  .new-row-input {
+    width: 100%;
+  }
+  

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FileUploader from "../components/FileUploader/FileUploader";
 import DataTable from "../components/DataTable/DataTable";
 import AIQueryPanel from "../components/AIQueryPanel/AIQueryPanel";

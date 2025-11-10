@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-export default function AIQueryPanel({ datasetId, onQuery }) {
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState(null);
+interface AIQueryPanelProps {
+  datasetId: string;
+  onQuery: (question: string) => Promise<{ answer: string }>;
+}
+
+export default function AIQueryPanel({ onQuery }: AIQueryPanelProps) {
+  const [question, setQuestion] = useState<string>("");
+  const [answer, setAnswer] = useState<null | { answer: string }>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     if (!question) return;
-    const res = await onQuery(question);
-    setAnswer(res);
+    setLoading(true);
+    setAnswer(null);
+
+    try {
+      const res = await onQuery(question);
+      setAnswer(res);
+    } catch (err) {
+      console.error(err);
+      setAnswer({ answer: "Error getting AI response." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -17,9 +33,12 @@ export default function AIQueryPanel({ datasetId, onQuery }) {
         placeholder="Ask a question..."
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
-        style={{ width: "70%" }}
+        style={{ width: "70%", marginRight: "0.5rem", padding: "0.5rem" }}
       />
-      <button onClick={handleSubmit}>Ask AI</button>
+      <button onClick={handleSubmit} disabled={loading || !question}>
+        {loading ? "Loading..." : "Ask AI"}
+      </button>
+
       {answer && (
         <div style={{ marginTop: "1rem" }}>
           <strong>Answer:</strong> {answer.answer}

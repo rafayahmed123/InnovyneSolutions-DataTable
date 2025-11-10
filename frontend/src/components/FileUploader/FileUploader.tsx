@@ -17,7 +17,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onUpload }) => {
   const handleUpload = () => {
     if (file) {
       onUpload(file);
-      setFile(null); // reset input after upload
+      setFile(null);
     }
   };
 

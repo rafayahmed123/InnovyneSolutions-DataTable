@@ -41,48 +41,57 @@ tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.file-uploader input[type="file"] {
-  display: none;
-}
-
-.file-uploader label {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #0070f3;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.file-uploader label:hover {
-  background-color: #005bb5;
-}
-
-.ai-panel {
-  margin-top: 30px;
-  padding: 20px;
-  background-color: #e9f0ff;
-  border-radius: 8px;
-}
-
-.ai-panel input[type="text"] {
-  width: 80%;
-  padding: 10px;
-  margin-right: 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
+/* Base button styling for all buttons */
+button,
+.file-select-btn,
+.upload-btn,
 .ai-panel button {
-  padding: 10px 15px;
+  padding: 10px 20px;
   border: none;
   border-radius: 6px;
-  background-color: #0070f3;
+  background-color: #0070f3; /* primary blue */
   color: white;
   cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
 }
 
+button:hover,
+.file-select-btn:hover,
+.upload-btn:hover,
 .ai-panel button:hover {
   background-color: #005bb5;
 }
+
+/* Disabled state */
+button:disabled,
+.upload-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Success/secondary buttons (like upload) */
+.upload-btn {
+  background-color: #00b37e;
+  margin-top: 10px;
+}
+
+.upload-btn:hover:not(:disabled) {
+  background-color: #01875f;
+}
+
+/* Danger buttons (like delete) */
+.delete-btn {
+  background-color: #e53e3e;
+}
+
+.delete-btn:hover {
+  background-color: #c53030;
+}
+
+/* File select button */
+.file-select-btn {
+  user-select: none;
+}
+

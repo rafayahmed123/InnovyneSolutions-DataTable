@@ -46,7 +46,6 @@ async function answerWithAI(dataset, question) {
   {
     "summary": "optional summary text",
     "answer": "direct answer to the question",
-    "details": []
   }
   
   If performing data modification, return ONLY structured JSON:

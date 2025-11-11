@@ -13,7 +13,7 @@ async function answerWithAI(dataset, question) {
     return { answer: "No data available." };
   }
 
-  const dataPreview = JSON.stringify(dataset.rows.slice(0, 20));
+  const dataPreview = JSON.stringify(dataset);
   const prompt = `
   You are an AI assistant inside a web application for exploring and editing tabular data uploaded by the user.
   

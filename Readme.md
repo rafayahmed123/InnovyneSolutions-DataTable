@@ -64,7 +64,6 @@ This project focuses on **rapid prototyping** with a minimal but flexible archit
 **Utilities:**
 
 - dotenv
-- crypto UUID
 
 ---
 
@@ -146,7 +145,7 @@ The current version is optimized for **speed of development**, not long‑term s
 
 ### ✅ API / Backend
 
-- Add pagination, filtering, validation, rate-limiting within the APIs
+- Add pagination, filtering, validation, rate-limiting and caching within the APIs
 - Expand summarizer to column‑profiling
 - Pre‑compute statistics
 - Add metadata versioning

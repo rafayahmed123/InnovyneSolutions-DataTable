@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:5001/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 export const uploadDataset = async (file: File) => {
   const formData = new FormData();
@@ -10,7 +10,7 @@ export const uploadDataset = async (file: File) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 
-  return res.data; // res.data.filePath and res.data.rows
+  return res.data;
 };
 
 export const updateFileRows = async (filePath: string, rows: any[]) => {

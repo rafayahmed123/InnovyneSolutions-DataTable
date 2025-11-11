@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-InnoVyne Solutions is a full-stack application that allows users to upload datasets, explore them in a table interface, and query insights using an AI-powered assistant. The project is split into **frontend** and **backend** folders.
+InnoVyne Data Explorer is a lightweight full‑stack web application that lets users upload a dataset (CSV or JSON), explore & edit it in a table interface, and interact with an AI assistant to ask questions or summarize the data.
+
+This project focuses on **rapid prototyping** with a minimal but flexible architecture.
 
 ---
 
@@ -10,71 +12,84 @@ InnoVyne Solutions is a full-stack application that allows users to upload datas
 
 ### Frontend
 
-- **Framework:** React + TypeScript, built with Vite.
-- **Components:**
-  - `FileUploader` – Upload CSV or JSON datasets.
-  - `DataTable` – Editable table interface for dataset rows.
-  - `AIQueryPanel` – Ask questions to the AI about the dataset.
-- **State Management:** Local state (`useState`) for dataset and question handling.
-- **Table Management:** `@tanstack/react-table` for flexible, editable tables.
-- **Styling:** Component-based CSS files.
-- **API Communication:** `datasetApi` handles interactions with backend endpoints for uploads and AI queries.
-- **Loader UI:** Shows a visual indicator while waiting for AI responses.
+- **Framework:** React + TypeScript (Vite)
+- **State:** Local component state (`useState`) for simplicity
+- **Tables:** `@tanstack/react-table` for a flexible editable grid
+- **Key Components:**
+
+  - `FileUploader` – Upload CSV/JSON
+  - `DataTable` – View/edit dataset rows
+  - `AIQueryPanel` – Query dataset with AI assistant
+
+- **API Layer:** `datasetApi.ts` for backend communication
+- **Why this works well:**
+
+  - `tanstack-table` provides excellent feature‑extensibility
+  - Minimal state overhead keeps the app easy to iterate on
 
 ### Backend
 
-- **Framework:** Express.js
-- **Routes:**
-  - `upload.routes.js` – Endpoint to upload CSV/JSON datasets (`POST /api/upload`).
-  - `ai.routes.js` – Endpoint to query AI using dataset (`POST /api/ai/query`).
-- **Controllers & Services:**
-  - `upload.controller.js` – Handles file parsing and dataset storage.
-  - `openai.service.js` – Integrates OpenAI API for AI question-answering.
-  - `summarize.service.js` – Generates statistical summaries and anomaly detection for datasets.
-- **Data Storage:** In-memory dataset storage via `dataStore`.
-- **Middleware:** `cors` and `express.json()` for handling requests.
-- **File Handling:** `multer` used to handle file uploads.
-- **Environment Variables:** `.env` stores sensitive credentials like OpenAI API key.
-- **Server Entry:** `server.js` initializes routes and starts server.
+- **Framework:** Node.js + Express
+- **Upload:** Uses Multer to store uploaded file on disk
+- **Data Parsing:** Simple CSV/JSON parsing
+- **AI:** Uses OpenAI (`gpt-4o-mini`) for dataset Q&A
+- **Data Storage:** In‑memory (map keyed by datasetId)
+- **Why this works well:**
+
+  - Very fast for prototyping
+  - Zero infrastructure required
+  - No DB migrations/complexity
 
 ---
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, Vite, @tanstack/react-table
-- **Backend:** Node.js, Express.js, Multer
-- **AI Integration:** OpenAI API (`gpt-4o-mini`)
-- **Utilities:** CSV parsing (`csv-parser`), UUID generation, dotenv for environment variables
-- **Dev Tools:** Nodemon, CORS for cross-origin requests
+**Frontend:**
+
+- React
+- TypeScript
+- Vite
+- @tanstack/react-table
+
+**Backend:**
+
+- Node.js + Express
+- Multer
+- CSV Parser
+
+**AI Integration:**
+
+- OpenAI API (`gpt-4o-mini`)
+
+**Utilities:**
+
+- dotenv
+- crypto UUID
 
 ---
 
 ## Features
 
-1. **Dataset Upload:** Upload CSV or JSON files via drag-and-drop or file select.
-2. **Editable Tables:** Inline editing of dataset rows, add/delete rows dynamically.
-3. **AI-Powered Queries:** Ask questions about dataset content using OpenAI.
-4. **Data Summarization:** Statistical summaries including min, max, avg, std, and anomaly detection.
-5. **User Experience:** Visual loaders during AI queries and responsive UI.
+✅ Upload CSV or JSON datasets
+✅ Displays data in an interactive editable table
+✅ Add / edit table rows
+✅ Ask an AI assistant questions about the dataset
+✅ Summarization support (stats, anomalies)
 
 ---
 
-## Setup Instructions
+## Setup
 
-## Frontend
-
-InnoVyne Solutions is a full-stack application that allows users to upload datasets, explore them in a table interface, and query insights using an AI-powered assistant. The project is split into **frontend** and **backend** folders.
-
-## Backend
+### Backend
 
 ```bash
 cd backend
 npm install
-cp .env.example .env # add your OpenAI API key
+cp .env.example .env # add OPENAI_API_KEY
 npm run dev
 ```
 
-### Frontend Setup
+### Frontend
 
 ```bash
 cd frontend
@@ -84,43 +99,138 @@ npm run dev
 
 ### Access
 
-Frontend: http://localhost:5173
-(Vite default)
+- Frontend → [http://localhost:5173](http://localhost:5173)
+- Backend API → [http://localhost:5001](http://localhost:5001)
 
-Backend API: http://localhost:5001
+---
 
-## Future Improvements / Suggestions
+## Prompting Strategy
 
-### Persistent Data Storage
+The app sends a custom structured prompt to OpenAI:
 
-- Move from in-memory storage to a database (MongoDB, PostgreSQL).
+```
+You are a data analysis assistant.
+You will be given a tabular dataset and a user question.
 
-### Authentication & User Management
+Your task:
+1) Summarize the dataset when asked.
+2) Answer questions strictly from the dataset.
+3) If uncertain, say "Not enough information.".
+4) Give concise answers.
 
-- Secure endpoints and allow user-specific datasets.
+Dataset Preview:
+${dataPreview}
 
-### Error Handling
+Question:
+${question}
+```
 
-- Improve AI rate-limit handling and dataset parsing errors.
+This prompt encourages:
 
-### Advanced Table Features
+- Direct, structured responses
+- Better factual grounding
+- Reduced hallucinations
 
-- Add pagination, filtering, sorting, and exporting datasets.
+---
 
-### AI Enhancements
+## Scalability Considerations (Future Improvements)
 
-- Summarization of large datasets.
-- Ability to handle multi-file uploads.
-- Use embeddings for semantic search queries on datasets.
+The current version is optimized for **speed of development**, not long‑term scale. Future work may include:
 
-### Frontend Improvements
+### ✅ Data Layer
 
-- Use a UI library (e.g., MUI, Tailwind) for consistent components and responsive layouts.
+| Current              | Limitation                           | Improvement                   |
+| -------------------- | ------------------------------------ | ----------------------------- |
+| In‑memory store      | Data lost on restart; not multi‑user | Use PostgreSQL / MongoDB      |
+| On‑disk file storage | No versioning                        | Store original & parsed forms |
 
-### Backend Modularization
+### ✅ API / Backend
 
-- Refactor services and controllers for better scalability and testing.
+- Add pagination, filtering, validation, rate-limiting within the APIs
+- Expand summarizer to column‑profiling
+- Pre‑compute statistics
+- Add metadata versioning
+
+### ✅ Frontend
+
+- Introduce global store (Zustand/TanStack Query)
+- Add visualization (charts)
+- Bulk edit / multi‑select
+
+### ✅ AI
+
+- Use embeddings for semantic dataset search
+- Auto‑detect anomalies
+- Summaries based on metadata + stats instead of raw rows
+
+### ✅ Production
+
+- Deploy on managed infra (Railway / Fly.io / Render)
+- Add logging + metrics
+- Caching (Redis)
+
+---
+
+## Why This Tech Works Well for a Quick App
+
+### ✅ In‑Memory Datastore
+
+- Easiest possible persistence option
+- Near‑zero latency lookups
+- No schema or migrations
+- Perfect for hackathon / prototype
+
+### ✅ TanStack Table
+
+- Extremely flexible & modular
+- Easy cell editing + sorting + filtering
+- More scalable than basic HTML tables
+
+### ✅ OpenAI integration
+
+- Very fast way to build intelligence into a prototype
+- Supports iterative prompting
+
+### ✅ Express + Vite
+
+- Minimal boilerplate
+- Familiar patterns
+- Easy local development
+
+> Overall: This stack minimizes **time‑to‑prototype**, while keeping a clean path to future scalability.
+
+---
+
+## Improvements We Could Make
+
+### Reliability
+
+- Persist to database
+- Validate data types on import
+
+### UX
+
+- Rich filtering
+- Chart visualizations
+
+### Integration
+
+- Multiple datasets per user
+- Dataset versioning
 
 ### Testing
 
-- Add unit tests (Jest) and integration tests for both frontend and backend.
+- Jest / Vitest unit tests
+
+---
+
+## Summary
+
+This project demonstrates:
+
+- File ingestion
+- Tabular exploration + editing
+- AI‑augmented data Q&A
+- Clean minimal full‑stack architecture
+
+It makes strong trade‑offs for **speed of development & clarity**, with clear paths to scalability.

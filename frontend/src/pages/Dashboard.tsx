@@ -10,7 +10,6 @@ export default function Dashboard() {
 
   const handleUpload = async (file: File) => {
     const res = await uploadDataset(file);
-    console.log("filePath:", res.filePath);
     setFilePath(res.filePath);
     setData(res.rows);
   };
